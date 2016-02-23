@@ -1,0 +1,61 @@
+<html>
+
+<head>
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8">
+<META HTTP-EQUIV="Content-Script-Type" CONTENT="text/javascript">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<title>大会ルール</title>
+
+</head>
+<body>
+
+<div align="center">
+<h3>大会ルール</h3>
+</div>
+
+<hr>
+
+<h3> ■ 大会ルール </h3>
+
+<h4> ● 問題設定 </h3>
+
+<ul>
+<li> GameCompクラスを継承したサブクラス User_s11t2XX_NN.java を作成する </li>
+<li> 着手メソッド calc_hand をオーバーライドし、戦略を作成する </li>
+</ul>
+
+<h4> ● 対戦方式 </h4>
+
+<ul>
+<li> 先手後手の1組で1ゲームとし、下表のような勝ち点を付ける </li>
+<li> 1勝1敗では、総取石数で勝敗を決める </li>
+<li> 着手の時間は計測しており、30秒を越える長考や無限ループは失格負けとなる </li>
+<li> クラス内で総当たり対戦を行い、勝ち点の合計で順位を決める </li>
+</ul>
+
+<table border="1">
+<caption>勝ち点</caption>
+<tr><td>2勝</td><td>完勝</td><td>+4</td></tr>
+<tr><td>1勝1敗</td><td>判定勝ち(取石数が多い)</td><td>+3</td></tr>
+<tr><td>1勝1敗</td><td>引分(取石数が同じ)</td><td>+2</td></tr>
+<tr><td>1勝1敗</td><td>判定負け(取石数が少ない)</td><td>+1</td></tr>
+<tr><td>2敗</td><td>完敗</td><td>+0</td></tr>
+</table>
+
+<h4> ○ 総当たり対戦の例 </h4>
+
+<table border="1">
+<tr><th width="20pt">&nbsp;</th><th width="20pt">A</th><th width="20pt">B</th><th width="20pt">C</th><th width="20pt">D</th><th width="20pt">E</th><th>勝敗</th><th>得点</th><th>順位</th></tr>
+<tr><th>A</th><td align="center">-</td><td align="center">4</td><td align="center">0</td><td align="center">3</td><td align="center">2</td><td>2勝1敗1分</td><td align="right">9</td><td align="right">3</td></tr>
+<tr><th>B</th><td align="center">0</td><td align="center">-</td><td align="center">0</td><td align="center">1</td><td align="center">1</td><td>0勝4敗0分</td><td align="right">2</td><td align="right">5</td></tr>
+<tr><th>C</th><td align="center">4</td><td align="center">4</td><td align="center">-</td><td align="center">1</td><td align="center">4</td><td>3勝1敗0分</td><td align="right">13</td><td align="right">1</td></tr>
+<tr><th>D</th><td align="center">1</td><td align="center">3</td><td align="center">3</td><td align="center">-</td><td align="center">4</td><td>3勝1敗0分</td><td align="right">11</td><td align="right">2</td></tr>
+<tr><th>E</th><td align="center">2</td><td align="center">3</td><td align="center">0</td><td align="center">0</td><td align="center">1</td><td>1勝2敗1分</td><td align="right">5</td><td align="right">4</td></tr>
+</table>
+
+<hr>
+
+</body>
+</html>

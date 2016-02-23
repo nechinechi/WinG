@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE module SYSTEM "../log.dtd">
+
+<!--  ログ  -->
+<gogolog>
+
+ <!--  管理部  -->
+ <manage_part>
+  
+  <!--  対戦情報  -->
+  <battle_info>
+   <!--  棋譜ID  -->
+   <id>null</id>
+   <!--  対戦日時  -->
+   <date>2014_0028_170439</date>
+  </battle_info>
+  
+  <!--  ゲーム情報  -->
+  <game_info>
+   <!--  盤面サイズ  -->
+   <boardsize>13</boardsize>
+   <!--  盤面の初期配置  -->
+   <board>    <cell_list>
+     <cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell>
+    </cell_list>
+    <cell_list>
+     <cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell>
+    </cell_list>
+    <cell_list>
+     <cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell>
+    </cell_list>
+    <cell_list>
+     <cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell>
+    </cell_list>
+    <cell_list>
+     <cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>-1</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell>
+    </cell_list>
+    <cell_list>
+     <cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>-1</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell>
+    </cell_list>
+    <cell_list>
+     <cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>-1</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell>
+    </cell_list>
+    <cell_list>
+     <cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell>
+    </cell_list>
+    <cell_list>
+     <cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>-1</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell>
+    </cell_list>
+    <cell_list>
+     <cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell>
+    </cell_list>
+    <cell_list>
+     <cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell>
+    </cell_list>
+    <cell_list>
+     <cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell>
+    </cell_list>
+    <cell_list>
+     <cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell><cell>0</cell>
+    </cell_list>
+   </board>
+   <!--  初期取石数  -->
+   <stone1>0</stone1>
+   <stone2>0</stone2>
+  </game_info>
+  
+  <!--  戦略リスト  -->
+  <strategy_list>
+   <!--  戦略1  -->
+   <strategy number="1">
+    <!--  戦略ID  -->
+    <strategy_id>null</strategy_id>
+    <!--  戦略名  -->
+    <strategy_name>Dummy00</strategy_name>
+    <!--  作成者  -->
+    <author>Dummy00</author>
+   </strategy>
+   
+   <!--  戦略2  -->
+   <strategy number="2">
+    <!--  戦略ID  -->
+    <strategy_id>null</strategy_id>
+    <!--  戦略名  -->
+    <strategy_name>Dummy99</strategy_name>
+    <!--  作成者  -->
+    <author>Dummy99</author>
+   </strategy>
+   
+  </strategy_list>
+  
+  <!--  システム情報  -->
+  <system_info>
+   <!--  バージョン  -->
+   <version>1.50</version>
+  </system_info>
+  
+ </manage_part>
+ 
+ <!--  結果部  -->
+ <result_part>
+  
+  <!--  総合勝敗  -->
+  <total>
+   <!--  プレイヤ1の勝数  -->
+   <win1>2</win1>
+   <!--  プレイヤ2の勝数  -->
+   <win2>0</win2>
+   <!--  引分数  -->
+   <draw>0</draw>
+  </total>
+  
+  <!--  結果リスト  -->
+  <result_list>
+   <!--  1戦目の結果  -->
+   <result number="1">
+    <!--  先手後手  -->
+    <first>1</first>
+    <!--  手数  -->
+    <count>3</count>
+    <!--  プレイヤ1の取石数  -->
+    <stone1>0</stone1>
+    <!--  プレイヤ2の取石数  -->
+    <stone2>0</stone2>
+    <!--  勝者  -->
+    <winner>1</winner>
+    <!--  勝因  -->
+    <reason>エラー</reason>
+   </result>
+   
+   <!--  2戦目の結果  -->
+   <result number="2">
+    <!--  先手後手  -->
+    <first>2</first>
+    <!--  手数  -->
+    <count>2</count>
+    <!--  プレイヤ1の取石数  -->
+    <stone1>0</stone1>
+    <!--  プレイヤ2の取石数  -->
+    <stone2>0</stone2>
+    <!--  勝者  -->
+    <winner>1</winner>
+    <!--  勝因  -->
+    <reason>連</reason>
+   </result>
+   
+  </result_list>
+  
+  <!--  分析結果  -->
+  <analyze>
+   
+  </analyze>
+  
+ </result_part>
+ 
+ <!--  過程部  -->
+ <process_part>
+  <!--  1戦目の過程  -->
+  <hand_list number="1">
+   <!--  打手情報セット  -->
+   <hand>
+    <!--  手数  -->
+    <count>1</count>
+    <!--  手番  -->
+    <teban>1</teban>
+    <!--  打手位置  -->
+    <put>
+     <!--  位置X  -->
+     <putx>5</putx>
+     <!--  位置Y  -->
+     <puty>7</puty>
+    </put>
+    <!--  時間  -->
+    <time>0.0</time>
+    <!--  効果  -->
+    <effect_list>
+     <effect></effect>
+    </effect_list>
+    <!--  局面へのリンク  -->
+    <link></link>
+   </hand>
+   
+   <!--  打手情報セット  -->
+   <hand>
+    <!--  手数  -->
+    <count>2</count>
+    <!--  手番  -->
+    <teban>2</teban>
+    <!--  打手位置  -->
+    <put>
+     <!--  位置X  -->
+     <putx>0</putx>
+     <!--  位置Y  -->
+     <puty>0</puty>
+    </put>
+    <!--  時間  -->
+    <time>0.0</time>
+    <!--  効果  -->
+    <effect_list>
+     <effect></effect>
+    </effect_list>
+    <!--  局面へのリンク  -->
+    <link></link>
+   </hand>
+   
+   <!--  打手情報セット  -->
+   <hand>
+    <!--  手数  -->
+    <count>3</count>
+    <!--  手番  -->
+    <teban>1</teban>
+    <!--  打手位置  -->
+    <put>
+     <!--  位置X  -->
+     <putx>9</putx>
+     <!--  位置Y  -->
+     <puty>3</puty>
+    </put>
+    <!--  時間  -->
+    <time>0.0</time>
+    <!--  効果  -->
+    <effect_list>
+     <effect></effect>
+    </effect_list>
+    <!--  局面へのリンク  -->
+    <link></link>
+   </hand>
+   
+  </hand_list>
+  
+  <!--  2戦目の過程  -->
+  <hand_list number="2">
+   <!--  打手情報セット  -->
+   <hand>
+    <!--  手数  -->
+    <count>1</count>
+    <!--  手番  -->
+    <teban>2</teban>
+    <!--  打手位置  -->
+    <put>
+     <!--  位置X  -->
+     <putx>0</putx>
+     <!--  位置Y  -->
+     <puty>0</puty>
+    </put>
+    <!--  時間  -->
+    <time>0.0</time>
+    <!--  効果  -->
+    <effect_list>
+     <effect></effect>
+    </effect_list>
+    <!--  局面へのリンク  -->
+    <link></link>
+   </hand>
+   
+   <!--  打手情報セット  -->
+   <hand>
+    <!--  手数  -->
+    <count>2</count>
+    <!--  手番  -->
+    <teban>1</teban>
+    <!--  打手位置  -->
+    <put>
+     <!--  位置X  -->
+     <putx>5</putx>
+     <!--  位置Y  -->
+     <puty>7</puty>
+    </put>
+    <!--  時間  -->
+    <time>0.0</time>
+    <!--  効果  -->
+    <effect_list>
+     <effect></effect>
+    </effect_list>
+    <!--  局面へのリンク  -->
+    <link></link>
+   </hand>
+   
+  </hand_list>
+  
+ </process_part>
+ 
+</gogolog>

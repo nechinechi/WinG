@@ -1,0 +1,483 @@
+<html>
+
+<head>
+
+    <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8">
+    <META HTTP-EQUIV="Content-Script-Type" CONTENT="text/javascript">
+    <META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+    <title>対戦実行モジュールの内部構造</title>
+
+</head>
+
+<body>
+
+    <div align="center">
+        <!--<h3>対戦実行モジュールの内部構造</h3>-->
+        <h3>ユーザ戦略の作り方</h3>
+    </div>
+
+    <hr>
+
+    <!--
+    <h3> ■ 対戦実行モジュールの構成 </h3>
+
+    対戦実行モジュールは<a href="files/classlist.txt" target="_blank">classlist.txt</a>に示すクラスから構成される。
+    また、実行モジュールでの着手1回分の処理の流れを、下図に示す。<br>
+    <br>
+    <img src="files/GogoModel.png"><br>
+    <br>
+
+    <table border="0">
+
+    <tr>
+    <td valign="top"><ul><li>Master</li></ul></td><td valign="top">…</td>
+    <td valign="top">ルールの解釈とゲームの進行を行う<br>
+    各Playerから渡された着手Handに従って、局面を更新する<br>
+    各Playerに局面Stateのコピーを渡し、局面の更新を通知する</td>
+    </tr>
+
+    <tr>
+    <td valign="top"><ul><li>Player</li></ul></td><td valign="top">…</td>
+    <td valign="top">対戦者<br>
+    実体は、人間(Person)と機械(Computer)のどちらにも対応<br>
+    着手(Hand)を生成し、Masterへ通知する<br>
+    局面の更新をMasterから受け取る</td>
+    </tr>
+
+    <tr>
+    <td valign="top"><ul><li>Computer</li></ul></td><td valign="top">…</td>
+    <td valign="top">Playerの実体が機械の場合のサブクラス<br>
+    着手決定メソッドで着手を計算する<br>
+    戦略作成とは、この着手決定メソッドをオーバーライドすることである<br>
+    着手メソッドは、局面Stateを引数とし、次の1手をHandで返す</td>
+    </tr>
+
+    <tr>
+    <td valign="top"><ul><li>Person</li></ul></td><td valign="top">…</td>
+    <td valign="top">Playerの実体が人間の場合のサブクラス<br>
+    GUIからの入力に従って、着手を生成する</td>
+    </tr>
+
+    <tr><td> &nbsp;</td><td>&nbsp;</td></tr>
+
+    <tr>
+    <td valign="top"><ul><li>State</li></ul></td><td valign="top">…</td>
+    <td valign="top">局面情報<br>
+    抽象データとして受け渡される<br>
+    現在の手数や手番、盤面(Board)、側箱(Pocket)などを持つ<br>
+    Playerにはコピーが渡され、Playerが更新することはできない</td>
+    </tr>
+
+    <tr>
+    <td valign="top"><ul><li>Hand</li></ul></td><td valign="top">…</td>
+    <td valign="top">着手情報<br>
+    着手位置のXY座標を持つ<br>
+    着手情報は、Hand型で受け渡される</td>
+    </tr>
+
+    <tr>
+    <td valign="top"><ul><li>Board</li></ul></td><td valign="top">…</td>
+    <td valign="top">局面(State)が持つ情報の1つで、盤面情報を持つ<br>
+    int型の二次元配列に盤面の石の配置が格納されている<br>
+    黒石(FORMER)、白石(LATTER)、空白(SPACE)のいずれかが入る</td>
+    </tr>
+
+    <tr>
+    <td valign="top"><ul><li>Pocket</li></ul></td><td valign="top">…</td>
+    <td valign="top">局面(State)が持つ情報の1つで、側箱情報を持つ<br>
+    各プレイヤの取石数が格納されている</td>
+    </tr>
+
+    </table>
+
+    <ul>
+    <li> クラスリスト &nbsp;
+         <a href="files/classlist.txt" target="_blank">[classlist.txt]</a> </li>
+    </ul>
+
+    <hr>
+    -->
+
+    <h3> ■ ユーザ戦略の作成 </h3>
+
+    <h4> ● 事前準備 </h4>
+
+    <ul>
+    <li> フォルダ data/strategy/user/s11t200/ をコピーし、自分の学籍番号に変更する。 </li>
+    <li> Javaソース User_s11t200_00.java のファイル名を、自分の学籍番号に変更する。 </li>
+    <li> ファイル名の学籍番号より後の2桁は、バージョン番号として使う。 </li>
+    <li> 変更したJavaソースを開く。 </li>
+    <li> Javaソース内のパッケージ名とクラス名を適切に変更する。 </li>
+    <li> 変数 name の値を、自分の学籍番号に変更する。対戦時にこの名前が使われる。 </li>
+    <li> 書換例 (s11t200の人の場合)</li>
+    </ul>
+
+    <pre>
+    // パッケージ名を変更する
+    package data.strategy.user.s11t200;
+
+    // クラス名を変更する
+    public class User_s11t200_00 extends GogoCompSub {
+
+    //====================================================================
+    //  コンストラクタ
+    //====================================================================
+
+      public User_s11t200_00(GamePlayer player) {  // クラス名を変更する
+        super(player);
+        name = "s11t200";    // 自分の学籍番号
+        
+      }
+    </pre>
+
+    <h4> ● 戦略作成 </h4>
+
+    <ul>
+    <li> 戦略を数学的に考える。ヒューリスティックな知識も利用する。 </li>
+    <li> 考えた戦略を、算法として設計する。 </li>
+    <li> 着手メソッド calc_hand() を実装する。 </li>
+    </ul>
+
+    戦略の考え方は、<a href="guide.html">戦略作成の指針</a>を参照。
+
+    <h4> ● ユーザ戦略のコンパイル </h4>
+
+    <ul>
+    <li> _UserCompile.bat を使ってコンパイルする。 </li>
+    <!--
+    <li> # 複数の戦略ファイルを同じフォルダで管理する。 </li>
+    <li> # 1つの戦略が複数のファイルに分かれてもよい(?)。 </li>
+    -->
+    </ul>
+
+    <h4> ● プレイヤの設定 </h4>
+
+    <ul>
+    <li> SetPlayer.java の戦略指定部分を実行させたい戦略クラス名に書き換える。 </li>
+    <li> _GogoBuild.bat 実行し、SetPlayer.java(及びSetLeague.java) をコンパイルする。 </li>
+    <!--
+    <li> # 現状では繁雑なので、RoboCodeのように、
+         対戦相手をメニューから選べるようにする。</li>
+    -->
+    <li> コードの例(SetPlayer.java) </li>
+    </ul>
+
+    <pre>
+    ○ 人 対 人
+    
+      public SetPlayer() {
+        //--  プレイヤ１の指定
+        player1 = new GogoPlayer( null, +1, player1.PERS );    // 人間
+        //--  プレイヤ２の指定
+        player2 = new GogoPlayer( null, -1, player2.PERS );    // 人間
+      }
+
+
+
+    ○ 人 対 コンピュータ
+    
+      public SetPlayer() {
+        //--  プレイヤ１の指定
+        player1 = new GogoPlayer( null, +1, player1.PERS );    // 人間
+
+        //--  プレイヤ２の指定
+        player2 = new GogoPlayer( null, -1, player2.COMP );    // コンピュータ
+
+        //----  戦略バイナリの指定
+        player2.set_comp(new data.strategy.user.s11t200.User_s11t200_00(player2));
+      }
+
+
+
+    ○ コンピュータ 対 コンピュータ
+    
+      public SetPlayer() {
+        //--  プレイヤ１の指定
+        player1 = new GogoPlayer( null, +1, player1.COMP );    // コンピュータ
+
+        //----  戦略バイナリの指定
+        player1.set_comp(new data.strategy.user.s11t200.User_s11t200_00(player1));
+
+        //--  プレイヤ２の指定
+        player2 = new GogoPlayer( null, -1, player2.COMP );    // コンピュータ
+
+        //----  戦略バイナリの指定
+        player2.set_comp(new data.strategy.user.s11t200.User_s11t200_00(player2));
+      }
+    </pre>
+
+    <hr> <!-------------------------------------------------------------->
+
+    <h3> ■ リファレンス </h3>
+
+    <h4> ● 使用できる補助メソッド </h4>
+
+    以下のような局面状態を調べるメソッドを提供する。
+    戦略作成に際して、利用可能である。
+    また、メソッドを改良してもよい。
+    これらのメソッドは、sys/user/GogoCompSub.javaに実装されている。<br>
+    <br>
+
+    <table border="1">
+    <tr>
+    <th>メソッド名</th>
+    <th>引数</th>
+    <th>返り値</th>
+    <th>説明</th>
+    </tr>
+
+    <tr>
+    <td>get_role</td>
+    <td>void</td>
+    <td>int</td>
+    <td>自分の石の色を返す</td>
+    </tr>
+
+    <tr>
+    <td>get_mystone</td>
+    <td>GameState</td>
+    <td>int</td>
+    <td>自分の取石数を返す</td>
+    </tr>
+
+    <tr>
+    <td>get_enemystone</td>
+    <td>GameState</td>
+    <td>int</td>
+    <td>相手の取石数を返す</td>
+    </tr>
+
+    <tr>
+    <td>get_total_mystone</td>
+    <td>GameState</td>
+    <td>int</td>
+    <td>自分の総取石数を返す</td>
+    </tr>
+
+    <tr>
+    <td>get_total_enemystone</td>
+    <td>GameState</td>
+    <td>int</td>
+    <td>相手の総取石数を返す</td>
+    </tr>
+
+    <!--
+    <tr>
+    <td>check_run</td>
+    <td>GogoState, GogoHand</td>
+    <td>boolean</td>
+    <td>指定した座標に連ができているか返す</td>
+    </tr>
+
+    <tr>
+    <td>check_rem</td>
+    <td>GogoState, GogoHand</td>
+    <td>boolean</td>
+    <td>指定した座標に取れる石があるか返す</td>
+    </tr>
+    -->
+
+    </table>
+
+    <h4> ● 引数state(GameState型)が持つ値 </h4>
+
+    <table border="1">
+    <tr>
+    <th>変数名</th>
+    <th>型</th>
+    <th>保持する値</th>
+    </tr>
+
+    <tr>
+    <td>step</td>
+    <td>int</td>
+    <td>現在の手数</td>
+    </tr>
+
+    <tr>
+    <td>turn</td>
+    <td>int</td>
+    <td>現在の手番<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;1：Player1<br>
+    &nbsp;&nbsp;-1：Player2</td>
+    </tr>
+
+    <tr>
+    <td>board</td>
+    <td>GameBoard</td>
+    <td>盤面</td>
+    </tr>
+
+    <tr>
+    <td>pocket1</td>
+    <td>GamePocket</td>
+    <td>プレイヤ1側の側箱(取石数が格納される)</td>
+    </tr>
+
+    <tr>
+    <td>pocket2</td>
+    <td>GamePocket</td>
+    <td>プレイヤ2側の側箱(取石数が格納される)</td>
+    </tr>
+
+    <tr>
+    <td>hand</td>
+    <td>GameHand</td>
+    <td>直前の着手<br>
+    (最後に打たれた手)</td>
+    </tr>
+
+    </table>
+
+    <h4> ● 引数state(GameState型)が持つメソッド </h4>
+
+    <table border="1">
+    <tr>
+    <th>メソッド名</th>
+    <th>引数</th>
+    <th>返り値</th>
+    <th>説明</th>
+    </tr>
+
+    <tr>
+    <td>test_hand</td>
+    <td>GameHand</td>
+    <td>GameState</td>
+    <td>引数で指定された位置に石を置いた状態の、新しい局面を返す<br>
+    元の局面は変更されない</td>
+    </tr>
+
+    </table>
+
+    <p><b>・ 使用例</b></p>
+
+    <pre>
+    public synchronized GameHand calc_hand(GameState state, GameHand hand) {
+      GameState new_state;
+      GameHand new_hand = new GogoHand();
+      
+      new_hand.set_hand(0,0);
+      new_state = state.test_hand(hand);
+    </pre>
+
+    局面stateに0, 0の位置に着手した状態の局面が、new_stateに返される。<br>
+    stateの状態は変わっていない。
+
+    <h4> ● GameBoardが持つ値 </h4>
+
+    <table border="1">
+    <tr>
+    <th>変数名</th>
+    <th>型</th>
+    <th>保持する値</th>
+    </tr>
+
+    <tr>
+    <td>cell</td>
+    <td>int[][]</td>
+    <td>盤面の配列</td>
+    </tr>
+
+    <tr>
+    <td>SX</td>
+    <td>int</td>
+    <td>盤面Xサイズ</td>
+    </tr>
+
+    <tr>
+    <td>SY</td>
+    <td>int</td>
+    <td>盤面Yサイズ</td>
+    </tr>
+
+    <tr>
+    <td>FORMER</td>
+    <td>int</td>
+    <td>黒石(定数)</td>
+    </tr>
+
+    <tr>
+    <td>LATTER</td>
+    <td>int</td>
+    <td>白石(定数)</td>
+    </tr>
+
+    <tr>
+    <td>SPACE</td>
+    <td>int</td>
+    <td>空マス(定数)</td>
+    </tr>
+
+    <tr>
+    <td>OUTER</td>
+    <td>int</td>
+    <td>盤外(定数)</td>
+    </tr>
+
+    </table>
+
+    <h4> ● GameBoardが持つメソッド </h4>
+
+    <table border="1">
+    <tr>
+    <th>メソッド名</th>
+    <th>引数</th>
+    <th>返り値</th>
+    <th>説明</th>
+    </tr>
+
+    <tr>
+    <td>within_board</td>
+    <td>int x, int y</td>
+    <td>boolean</td>
+    <td>引数x,yが盤面の中にあるかどうかを判定するメソッド。<br>
+    盤面の中ならば、true、外ならばfalseを返す。</td>
+    </tr>
+
+    </table>
+
+    <p><b>・ 使用例</b></p>
+
+    <pre>
+    public synchronized GameHand calc_hand(GameState state, GameHand hand) {
+      GameBoard board = state.board;
+      〜〜〜
+      if ( board.within_board(x,y) == true ) {
+        if ( board.cell[x][y] == board.SPACE) {
+          〜〜〜
+        }
+      }
+    </pre>
+
+    within_boardを用いて、事前に盤内かどうかを調べておき、配列外参照を行わないようにする。
+
+    <h4> ● GamePocketが持つ値 </h4>
+
+    <table border="1">
+    <tr>
+    <th>変数名</th>
+    <th>型</th>
+    <th>保持する値</th>
+    </tr>
+
+    <tr>
+    <td>point</td>
+    <td>int</td>
+    <td>取石数</td>
+    </tr>
+
+    </table>
+
+    <h4> ● 着手メソッドの返り値 </h4>
+
+    <ul>
+    <li>GameHand型の値を返す。</li>
+    <li>GameHandクラスのset_hand(int x, int y)メソッドで値を設定する。</li>
+    </ul>
+
+    <hr>
+
+</body>
+
+</html>

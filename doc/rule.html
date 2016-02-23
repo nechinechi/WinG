@@ -1,0 +1,204 @@
+<html>
+
+<head>
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8">
+<META HTTP-EQUIV="Content-Script-Type" CONTENT="text/javascript">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<title>五五のルール</title>
+
+</head>
+<body>
+<style type="text/css">
+<!--
+td{width:17pt;
+   height:17pt;
+   font-size:15pt;
+   color:#000000;
+   text-align:center;}
+-->
+</style>
+<div align="center">
+<h3>五五のルール</h3>
+</div>
+
+<hr>
+<h3>■ 五五のルール</h3>
+
+<h4>● 基本ルール</h4>
+
+<ul>
+<li>先手は黒石、後手は白石を使用し、交互に石を打つ。</li>
+<li>2個並んだ相手の石を両側から挟んで取ることができる。</li>
+<li>1手で複数の方向の2連を同時に取ることも可能である。</li>
+<li>後から石間に置いて2連になったものは取ることができない。</li>
+</ul>
+
+<table border="0">
+<tr><th valign="center">
+
+<table border="1">
+<tr><td>　</td><td>　</td><td>　</td><td>○</td><td>　</td><td>　</td><td>　</td></tr>
+<tr><td>　</td><td>　</td><td>●</td><td>　</td><td>　</td><td>　</td><td>　</td></tr>
+<tr><td>　</td><td>●</td><td>●</td><td><font color="#ff0000"><b>○</b></font></td><td>　</td><td>　</td><td>　</td></tr>
+<tr><td>　</td><td>　</td><td>○</td><td><font color="#ff0000"><b>○</b></font></td><td>○</td><td>　</td><td>　</td></tr>
+<tr><td>　</td><td>○</td><td>●</td><td>●</td><td>○</td><td>○</td><td>　</td></tr>
+<tr><td>　</td><td>　</td><td>●</td><td>　</td><td>　</td><td>　</td><td>　</td></tr>
+<tr><td>　</td><td>　</td><td>　</td><td>　</td><td>　</td><td>　</td><td>　</td></tr>
+<caption align="bottom">石取(石を置く前)</caption>
+</table>
+
+</th>
+
+<th valign="center">
+<font size="+3">&nbsp;&nbsp;→&nbsp;&nbsp;</font>
+</th>
+
+<th valign="center">
+
+<table border="1">
+<tr><td>　</td><td>　</td><td>　</td><td>○</td><td>　</td><td>　</td><td>　</td></tr>
+<tr><td>　</td><td>　</td><td>●</td><td><font color="#ff0000">●</font></td><td>　</td><td>　</td><td>　</td></tr>
+<tr><td>　</td><td>●</td><td>●</td><td>　</td><td>　</td><td>　</td><td>　</td></tr>
+<tr><td>　</td><td>　</td><td>○</td><td>　</td><td>○</td><td>　</td><td>　</td></tr>
+<tr><td>　</td><td>○</td><td>●</td><td>●</td><td>○</td><td>○</td><td>　</td></tr>
+<tr><td>　</td><td>　</td><td>●</td><td>　</td><td>　</td><td>　</td><td>　</td></tr>
+<tr><td>　</td><td>　</td><td>　</td><td>　</td><td>　</td><td>　</td><td>　</td></tr>
+<caption align="bottom">石取(石を置いた後)</caption>
+</table>
+
+</th></tr>
+</table>
+
+<h4>● 勝利条件</h4>
+
+<ul>
+<li>縦・横・斜めのいずれかに、相手より先に完全な五連を作るか、10個石を取ると勝利となる。</li>
+<li>完全な五連とは、挟んで取られない五連のことである。</li>
+<li>長連(6個以上石の並び)は五と認められない。</li>
+</ul>
+
+<table border="0">
+<tr><th valign="center">
+
+<table border="1">
+<tr><td>　</td><td>　</td><td>　</td><td>○</td><td>　</td><td>　</td><td>　</td></tr>
+<tr><td>　</td><td>　</td><td><font color="#ff0000">●</font></td><td>　</td><td>　</td><td>　</td><td>　</td></tr>
+<tr><td>●</td><td>●</td><td><font color="#ff0000">●</font></td><td>○</td><td>　</td><td>　</td><td>　</td></tr>
+<tr><td>●</td><td>　</td><td><font color="#ff0000">●</font></td><td>○</td><td>○</td><td>　</td><td>　</td></tr>
+<tr><td>　</td><td>○</td><td><font color="#ff0000">●</font></td><td>●</td><td>○</td><td>○</td><td>○</td></tr>
+<tr><td>　</td><td>　</td><td><font color="#ff0000">●</font></td><td>　</td><td>　</td><td>　</td><td>　</td></tr>
+<tr><td>　</td><td>●</td><td>　</td><td>　</td><td>　</td><td>　</td><td>　</td></tr>
+<caption align="bottom">完全な五連(黒石)<br>&nbsp;</caption>
+</table>
+
+</th>
+
+<th valign="center">
+<font size="+3">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font>
+</th>
+
+<th valign="center">
+
+<table border="1">
+<tr><td>　</td><td>　</td><td>　</td><td>○</td><td>　</td><td>　</td><td>　</td></tr>
+<tr><td>　</td><td>　</td><td><font color="#ff0000">●</font></td><td>　</td><td>　</td><td>　</td><td>　</td></tr>
+<tr><td>●</td><td>●</td><td><font color="#ff0000">●</font></td><td>○</td><td>　</td><td>　</td><td>　</td></tr>
+<tr><td>●</td><td>　</td><td><font color="#ff0000">●</font></td><td>○</td><td>○</td><td>　</td><td>　</td></tr>
+<tr><td>　</td><td>○</td><td><font color="#ff0000">●</font></td><td><font color="#0000ff">●</font></td><td>○</td><td>○</td><td>○</td></tr>
+<tr><td>　</td><td>　</td><td><font color="#0000ff">●</font></td><td>　</td><td>　</td><td>　</td><td>　</td></tr>
+<tr><td>　</td><td>　</td><td>　</td><td>　</td><td>　</td><td>　</td><td>　</td></tr>
+<caption align="bottom">不完全な五連<br>(青い石は取られる)</caption>
+</table>
+
+</th></tr>
+</table>
+
+<table border="0">
+<tr><th valign="center">
+
+<table border="1">
+<tr><td>　</td><td>　</td><td><font color="#ff0000">●</font></td></td><td>○</td><td>　</td><td>　</td><td>　</td></tr>
+<tr><td>　</td><td>　</td><td><font color="#ff0000">●</font></td><td>　</td><td>　</td><td>　</td><td>　</td></tr>
+<tr><td>●</td><td>●</td><td><font color="#ff0000">●</font></td><td>○</td><td>　</td><td>　</td><td>　</td></tr>
+<tr><td>●</td><td>　</td><td><font color="#ff0000">●</font></td><td>○</td><td>○</td><td>　</td><td>　</td></tr>
+<tr><td>　</td><td>○</td><td><font color="#ff0000">●</font></td><td>●</td><td>○</td><td>○</td><td>○</td></tr>
+<tr><td>　</td><td>　</td><td><font color="#ff0000">●</font></td><td>　</td><td>　</td><td>　</td><td>　</td></tr>
+<tr><td>　</td><td>●</td><td>　</td><td>　</td><td>　</td><td>　</td><td>　</td></tr>
+<caption align="bottom">長連(五と認められない)<br>&nbsp;</caption>
+</table>
+
+</th></tr>
+</table>
+
+<h4>● 禁じ手</h4>
+
+<ul>
+<li>「三々」は先手後手共に禁じ手である。</li>
+<li>石を取られた後の「三々」は、禁じ手とならない。</li>
+<li>今回のルールでは、「飛び三」は禁じ手とはみなさない。</li>
+</ul>
+
+<table border="0">
+<tr><th valign="center">
+
+<table border="1">
+<tr><td>　</td><td>○</td><td>　</td><td>　</td><td>　</td><td>　</td><td>　</td><td>　</td></tr>
+<tr><td>　</td><td>○</td><td>　</td><td>　</td><td>○</td><td>　</td><td>　</td><td>　</td></tr>
+<tr><td>　</td><td>　</td><td>　</td><td>●</td><td>○</td><td>　</td><td>●</td><td>　</td></tr>
+<tr><td>　</td><td>　</td><td>●</td><td>●</td><td>　</td><td>　</td><td>　</td><td>●</td></tr>
+<tr><td>　</td><td>　</td><td>　</td><td><font color="#ff0000">●</font></td><td>　</td><td>○</td><td>○</td><td>　</td></tr>
+<tr><td>　</td><td>　</td><td>○</td><td>　</td><td>●</td><td>○</td><td>○</td><td>　</td></tr>
+<tr><td>　</td><td>○</td><td>●</td><td>　</td><td>　</td><td>　</td><td>●</td><td>　</td></tr>
+<tr><td>　</td><td>　</td><td>　</td><td>　</td><td>　</td><td>　</td><td>　</td><td>●</td></tr>
+<caption align="bottom">三々<br>(赤い所に黒石を置いた場合)</caption>
+</table>
+
+</th></tr>
+</table>
+
+<br><br>
+
+<table border="0">
+<tr><th valign="center">
+
+<table border="1">
+<tr><td>　</td><td>○</td><td>　</td><td>　</td><td>　</td><td>　</td><td>　</td><td>　</td></tr>
+<tr><td>　</td><td>○</td><td>　</td><td>　</td><td>○</td><td>　</td><td>　</td><td>　</td></tr>
+<tr><td>　</td><td>　</td><td>　</td><td>●</td><td>○</td><td>　</td><td>●</td><td>　</td></tr>
+<tr><td>　</td><td>　</td><td>●</td><td>●</td><td>　</td><td>　</td><td>　</td><td>●</td></tr>
+<tr><td>　</td><td>　</td><td>　</td><td>●</td><td>　</td><td><font color="#ff0000">●</font></td><td>○</td><td>　</td></tr>
+<tr><td>　</td><td>　</td><td>○</td><td>　</td><td>●</td><td><font color="#0000ff"><b>○</b></font></td><td>○</td><td>　</td></tr>
+<tr><td>　</td><td>○</td><td>●</td><td>　</td><td>　</td><td><font color="#0000ff"><b>○</b></font></td><td>　</td><td>○</td></tr>
+<tr><td>　</td><td>　</td><td>　</td><td>　</td><td>　</td><td>●</td><td>　</td><td>●</td></tr>
+<caption align="bottom">石を取り除くことでできる「三々」<br>(禁じ手ではない)</caption>
+</table>
+
+</th>
+
+<th valign="center">
+<font size="+3">&nbsp;&nbsp;&nbsp;&nbsp;</font>
+</th>
+
+<th valign="center">
+
+<table border="1">
+<tr><td>　</td><td>○</td><td>　</td><td>　</td><td>　</td><td>　</td><td>　</td><td>　</td></tr>
+<tr><td>　</td><td>○</td><td>　</td><td>　</td><td>○</td><td>　</td><td>　</td><td>　</td></tr>
+<tr><td>　</td><td>　</td><td>　</td><td><font color="#0000ff">●</font></td><td>○</td><td>　</td><td>●</td><td>　</td></tr>
+<tr><td>　</td><td>　</td><td>●</td><td>　</td><td>　</td><td>　</td><td>　</td><td>●</td></tr>
+<tr><td>　</td><td>　</td><td>　</td><td><font color="#ff0000">●</font></td><td>　</td><td>○</td><td>○</td><td>　</td></tr>
+<tr><td>　</td><td>　</td><td>○</td><td><font color="#0000ff">●</font></td><td>●</td><td>○</td><td>○</td><td>　</td></tr>
+<tr><td>　</td><td>○</td><td>●</td><td>　</td><td>　</td><td>　</td><td>●</td><td>　</td></tr>
+<tr><td>　</td><td>　</td><td>　</td><td>　</td><td>　</td><td>　</td><td>　</td><td>●</td></tr>
+<caption align="bottom">飛び三<br>(禁じ手とはみなさない)</caption>
+</table>
+
+</th></tr>
+</table>
+
+<hr>
+
+</body>
+</html>

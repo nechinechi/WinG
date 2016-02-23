@@ -1,0 +1,133 @@
+<HTML>
+
+<HEAD>
+    <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8">
+    <META HTTP-EQUIV="Content-Script-Type" CONTENT="text/javascript">
+    <META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+    
+    <TITLE> WinG-LAのチュートリアル </TITLE>
+</HEAD>
+
+<BODY>
+
+<DIV ALIGN="center">
+    <H3> WinG-LAのチュートリアル </H3>
+</DIV>
+
+<HR> <!-------------------------------------------------------------->
+
+<H4> 1. 開発環境WinG-LAのダウンロード </H4>
+
+<UL>
+<LI>\\stfile.eng.kagawa-u.ac.jp\report\tominaga\_Tutor\InfoExpr2 から開発環境をダウンロードする。</LI>
+<LI>開発環境は、C:\App\ 下に設置する。</LI>
+</UL>
+
+<H4> 2. 対戦実行モジュールの実行 </H4>
+
+<IMG src="files/対戦実行モジュール.JPG" alt="対戦実行モジュール" width="30%" height="30%">
+
+<UL>
+<LI>/ の _GogoStart.bat 実行し、開発環境WinG-LAを起動する。</LI>
+<LI>対戦実行モジュールを利用し、ユーザ同士で対戦を実行する。</LI>
+<LI>対戦実行モジュールのタブを選択し、メニュー → ゲーム → スタート で対戦を開始する。</LI>
+<LI>2戦目を開始するには、1戦目と同様に、メニュー → ゲーム → 2回戦 を選択する。</LI>
+<LI>対戦結果をユーザ戦譜として data/record/user/ 下に、Record_1 という名前で保存する。拡張子の指定は必要ない。</LI>
+<LI>対戦結果を保存するには、メニュー → ゲーム → 戦譜保存 を選択する。</LI>
+</UL>
+
+<H4> 3. 戦譜再現モジュールの実行 </H4>
+
+<IMG src="files/戦譜再現モジュール.JPG" alt="戦譜再現モジュール" width="30%" height="30%">
+
+<UL>
+<LI>戦譜再現モジュールのタブを開き、戦譜再現モジュールを利用して、対戦を再現する。</LI>
+<LI>先ほど保存した戦譜を読込む。メニュー → ファイル → 戦譜読込 を選択する。</LI>
+<LI>戦譜を再現する。ウィンドウ下部にある開始ボタンを押す。(手動と自動)</LI>
+<LI>適当な局面をユーザ局面として data/state/user/ 下に、State_0 という名前で保存する。拡張子の指定は必要ない。</LI>
+<LI>局面を保存するには、メニュー → ファイル → 局面保存 を選択する。</LI>
+</UL>
+
+<H4> 4. 局面生成モジュールの実行 </H4>
+
+<IMG src="files/局面生成モジュール.JPG" alt="局面生成モジュール" width="30%" height="30%">
+
+<UL>
+<LI>局面生成モジュールのタブを開き、局面生成モジュールを利用して、局面を編集する。</LI>
+<LI>先ほど保存した局面の読込む。ウィンドウ左部にある局面読込ボタンを押す。</LI>
+<LI>局面を編集する。(石の配置、取石の設定)</LI>
+<LI>適当な局面をユーザ局面として data/state/user/ 下に、State_1 という名前で保存。拡張子の指定は必要ない。</LI>
+</UL>
+
+<H4> 6. JDK環境の確認(1.7) </H4>
+
+<UL>
+<LI>WinG-LAの実行には、JDK 1.7以上が必要である。</LI>
+<LI>インストールされているJavaのバージョンを確認するには、コマンドプロンプト上で、java -version と javac -version コマンドを使用する。</LI>
+<LI>JDK 1.7 は以下からダウンロードできる。</LI>
+<A HREF="http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html">http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html</A>
+</UL>
+
+<H4> 7. サンプル戦略を用いるためのシステムのリビルド </H4>
+
+<UL>
+<LI>サンプル戦略を用いるためには、/ の SetPlayer.java の SetPlayer() 内を編集する。</LI>
+<LI>編集した SetPlayer.java をコンパイルするには、/ の _GogoBuild.bat を実行する。</LI>
+<LI>/ に SetPlayer.class が生成され、リビルドは完了する。</LI>
+<LI></LI>
+</UL>
+
+<PRE>
+例： ユーザ 対 コンピュータ
+
+public SetPlayer() {
+    //--  プレイヤ１の指定
+    player1 = new GogoPlayer( null, +1, player1.PERS );    // ユーザ
+
+    //--  プレイヤ２の指定
+    player2 = new GogoPlayer( null, -1, player2.COMP );    // コンピュータ
+
+    //----  戦略バイナリの指定
+    player2.set_comp(new data.strategy.sample.Dummy_00(player2));
+}
+</PRE>
+
+<H4> 8. サンプル戦略と初期局面を用いた対戦実行モジュールの実行 </H4>
+
+<UL>
+<LI>メニュー → 設定 → 初期局面読込 を選択し、先ほど保存した局面を読込む。</LI>
+<LI>ユーザ 対 コンピュータで対戦を実行する。</LI>
+<LI>対戦結果をユーザ戦譜として data/record/user/ 下に、Record_2 という名前で保存。拡張子の指定は必要ない。</LI>
+</UL>
+
+<H4> 9. ユーザ戦略の試作 </H4>
+
+<UL>
+<LI>ユーザ戦略を用いる場合も、7. と同様の作業手順である。</LI>
+<LI>戦略バイナリの指定部で、任意のユーザ戦略のパスを設定する。</LI>
+</UL>
+
+<PRE>
+例： ユーザ 対 コンピュータ
+
+public SetPlayer() {
+    //--  プレイヤ１の指定
+    player1 = new GogoPlayer( null, +1, player1.PERS );    // ユーザ
+
+    //--  プレイヤ２の指定
+    player2 = new GogoPlayer( null, -1, player2.COMP );    // コンピュータ
+
+    //----  戦略バイナリの指定
+    player2.set_comp(new data.strategy.user.s11t200.User_s11t200_00(player2));
+}
+</PRE>
+
+<H4> 10. ユーザ戦略を用いた対戦実行モジュールの実行 </H4>
+
+<UL>
+<LI>基本的には、3. と同じ。</LI>
+</UL>
+
+</BODY>
+
+</HTML>

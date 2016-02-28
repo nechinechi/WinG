@@ -27,7 +27,7 @@ public class User_s13t245_00 extends GogoCompSub {
     theState = state;
     theBoard = state.board;
     lastHand = hand;
-    GameState testState = state;
+    // GameState testState = state;
 
     //--  置石チェック
     init_values(theState, theBoard);
@@ -78,6 +78,8 @@ public class User_s13t245_00 extends GogoCompSub {
     //--  各マスの評価値
     for (int i = 0; i < size; i++) {
       for (int j = 0; j < size; j++) {
+        int my_len = check_run(cell, mycolor, i, j);
+        int enemy_len = check_run(cell, mycolor*-1, i, j);
         // 埋まっているマスはスルー
         if (values[i][j] == -2) { continue; }
         // 三々の禁じ手は打たない → -1
@@ -88,24 +90,24 @@ public class User_s13t245_00 extends GogoCompSub {
         //--  適当な評価の例
         // 相手の五連を崩す → 1000;
         // 勝利(五連) → 900;
-        if ( check_run(cell, mycolor, i, j, 5) ) {
+        if ( my_len == 5 ) {
           values[i][j] += 20000;
         }
         // 敗北阻止(五連) → 800;
-        if ( check_run(cell, mycolor*-1, i, j, 5) ) {
+        if ( enemy_len == 5 ) {
           values[i][j] += 20000;
         }
         // 相手の四連を止める → 700;
-        if ( check_run(cell, mycolor*-1, i, j, 4) ) {
+        if ( enemy_len == 4 ) {
           values[i][j] += 29000;
         }
         // 自分の四連を作る → 600;
-        if ( check_run(cell, mycolor, i, j, 4) ) {
+        if ( my_len == 4 ) {
           values[i][j] += 19000;
         }
         // 相手の石を取る → 300;
         if ( check_rem(cell, mycolor, i, j) ) {
-          values[i][j] += (my_stone >= 8) ? 20000 : 300;
+          values[i][j] += ( my_stone >= 8 ) ? 20000 : 300;
         }
         // 自分の石を守る → 200;
         if ( check_rem(cell, mycolor*-1, i, j) ) {
@@ -118,11 +120,11 @@ public class User_s13t245_00 extends GogoCompSub {
         }
         // if ( values[i][j] != 0 ) { continue; }
         // 相手の三連を防ぐ → 500;
-        if ( check_run(cell, mycolor*-1, i, j, 3) ) {
+        if ( enemy_len == 3 ) {
           values[i][j] += 500;
         }
         // 自分の三連を作る → 400;
-        if ( check_run(cell, mycolor, i, j, 3) ) { values[i][j] += 400; }
+        if ( my_len == 3 ) { values[i][j] += 400; }
         // ランダム
         if (values[i][j] == 0) {
           int aaa = (int) Math.round(Math.random() * 15);
@@ -137,69 +139,39 @@ public class User_s13t245_00 extends GogoCompSub {
 //  連の全周チェック
 //----------------------------------------------------------------
 
-  boolean check_run(int[][] board, int color, int i, int j, int len) {
-    for ( int dx = -1; dx <= 1; dx++ ) {
-      for ( int dy = -1; dy <= 1; dy++ ) {
-        if ( dx == 0 && dy == 0 ) { continue; }
-        if ( check_run_dir(board, color, i, j, dx, dy, len) ) { return true; }
-      }
+  int check_run(int[][] board, int color, int i, int j) {
+    // for ( int dx = -1; dx <= 1; dx++ ) {
+    //   for ( int dy = -1; dy <= 1; dy++ ) {
+    //     if ( dx == 0 && dy == 0 ) { continue; }
+    //     if ( check_run_dir(board, color, i, j, dx, dy, len) ) { return true; }
+    //   }
+    // }
+    // return false;
+    int[] count = new int[4];
+    count[0] = check_run_dir(board, color, i, j, 0, 1);   // 横
+    count[1] = check_run_dir(board, color, i, j, 1, 0);   // 縦
+    count[2] = check_run_dir(board, color, i, j, 1, 1);   // 傾き 1
+    count[3] = check_run_dir(board, color, i, j, 1, -1);  // 傾き-1
+    int max_index = 0;
+    for ( int k = 1; k < count.length; k++ ) {
+      if ( count[max_index] < count[k] ) { max_index = k; }
     }
-    return false;
+
+    return count[max_index];
   }
 
 //----------------------------------------------------------------
 //  連の方向チェック(止連・端連・長連も含む、飛びは無視)
 //----------------------------------------------------------------
 
-  boolean check_run_dir(int[][] board, int color, int i, int j, int dx, int dy, int len) {
-    for ( int k = 1; k < len; k++ ) {
-      int x = i+k*dx;
-      int y = j+k*dy;
-      if ( x < 0 || y < 0 || x >= size || y >= size ) { return false; }
-      if ( board[x][y] != color ) { return false; }
-    }
-    return true;
-  }
-
-//----------------------------------------------------------------
-//  禁じ手チェック
-//----------------------------------------------------------------
-
-  boolean check_prohibited(int[][] board, int color, int i, int j)
-  {
-    int count = 0;
-    for ( int dx = -1; dx <= 1; dx++ ) {
-      for ( int dy = -1; dy <= 1; dy++ ) {
-        if ( dx == 0 && dy == 0 ) { continue; }
-        if ( check_run_dir(board, color, i, j, dx, dy, 3) ) {
-          count++;
-          if ( check_three_len(board, color, i+dx, j+dy) ) { return true; }
-          if ( check_three_len(board, color, i+2*dx, j+2*dy) ) { return true; }
-        }
-      }
-    }
-    return ( count >= 2 );
-  }
-
-//----------------------------------------------------------------
-//  禁じ手チェック
-//----------------------------------------------------------------
-
-  boolean check_three_len(int[][] board, int color, int i, int j)
-  {
-    return check_three_len_dir(board, color, i, j, 1, 0)
-             || check_three_len_dir(board, color, i, j, 0, 1)
-             || check_three_len_dir(board, color, i, j, 1, 1)
-             || check_three_len_dir(board, color, i, j, 1, -1);
-  }
-
-//----------------------------------------------------------------
-//  禁じ手チェック
-//----------------------------------------------------------------
-
-  boolean check_three_len_dir(int[][] board, int color, int i, int j, int dx, int dy)
-  {
-    // if ( baord[i][j] != color ) { return false; }
+  int check_run_dir(int[][] board, int color, int i, int j, int dx, int dy) {
+    // for ( int k = 1; k < len; k++ ) {
+    //   int x = i+k*dx;
+    //   int y = j+k*dy;
+    //   if ( x < 0 || y < 0 || x >= size || y >= size ) { return false; }
+    //   if ( board[x][y] != color ) { return false; }
+    // }
+    // return true;
     int count = 1;
     int p, q;
     p = i-dx; q = j-dy;
@@ -218,7 +190,38 @@ public class User_s13t245_00 extends GogoCompSub {
         if ( !check_range(p, q) ) { break; }
       }
     }
-    return ( count == 3 );
+
+    return count;
+  }
+
+//----------------------------------------------------------------
+//  禁じ手チェック
+//----------------------------------------------------------------
+
+  boolean check_prohibited(int[][] board, int color, int i, int j)
+  {
+    for ( int dx = -1; dx <= 1; dx++ ) {
+      for ( int dy = -1; dy <= 1; dy++ ) {
+        if ( dx == 0 && dy == 0 ) { continue; }
+        if ( check_run_dir(board, color, i, j, dx, dy) == 3 ) {
+          if ( check_three_len(board, color, i+dx, j+dy) ) { return true; }
+          if ( check_three_len(board, color, i+2*dx, j+2*dy) ) { return true; }
+        }
+      }
+    }
+    return false;
+  }
+
+//----------------------------------------------------------------
+//  禁じ手チェック
+//----------------------------------------------------------------
+
+  boolean check_three_len(int[][] board, int color, int i, int j)
+  {
+    return check_run_dir(board, color, i, j, 1, 0) == 3         // 横
+             || check_run_dir(board, color, i, j, 0, 1) == 3    // 縦
+             || check_run_dir(board, color, i, j, 1, 1) == 3    // 傾き 1
+             || check_run_dir(board, color, i, j, 1, -1) == 3;  // 傾き-1
   }
 
 //----------------------------------------------------------------

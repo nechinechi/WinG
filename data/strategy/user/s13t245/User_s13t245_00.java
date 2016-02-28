@@ -84,6 +84,7 @@ public class User_s13t245_00 extends GogoCompSub {
           continue;
         }
         // 敗北阻止(五取) → 850;
+
         // 敗北阻止(五連) → 800;
         if ( check_run(cell, mycolor*-1, i, j, 5) ) {
           values[i][j] += 800;

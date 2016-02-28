@@ -72,14 +72,16 @@ public class User_s13t245_00 extends GogoCompSub {
     int my_stone;
     int enemy_stone;
     mycolor = role;
-    my_stone = get_mystone(prev);
-    enemy_stone = get_enemystone(prev);
+    my_stone = get_mystone(prev) / 2;
+    enemy_stone = get_enemystone(prev) / 2;
 
     //--  各マスの評価値
     for (int i = 0; i < size; i++) {
       for (int j = 0; j < size; j++) {
         int my_len = check_run(cell, mycolor, i, j);
         int enemy_len = check_run(cell, mycolor*-1, i, j);
+        int my_rem = check_rem(cell, mycolor, i, j);
+        int enemy_rem = check_rem(cell, mycolor*-1, i, j);
         // 埋まっているマスはスルー
         if (values[i][j] == -2) { continue; }
         // 三々の禁じ手は打たない → -1
@@ -106,19 +108,23 @@ public class User_s13t245_00 extends GogoCompSub {
           values[i][j] += 19000;
         }
         // 相手の石を取る → 300;
-        if ( check_rem(cell, mycolor, i, j) ) {
-          values[i][j] += ( my_stone >= 8 ) ? 20000 : 300;
+        if ( enemy_rem != 0 ) {
+          // values[i][j] += ( my_stone >= 4 ) ? 20000 : 300;
+          switch ( my_stone + enemy_rem ) {
+            case 5: values[i][j] += 20000; break;
+            case 4: values[i][j] += 15000; break;
+            default : values[i][j] += 300;
+          }
         }
         // 自分の石を守る → 200;
-        if ( check_rem(cell, mycolor*-1, i, j) ) {
-          // values[i][j] += (enemy_stone >= 8) ? 40000 : 200;
-          switch ( enemy_stone ) {
-            case 8: values[i][j] += 40000; break;
-            case 6: values[i][j] += 15000; break;
+        if ( my_rem != 0 ) {
+          // values[i][j] += (enemy_stone >= 4) ? 40000 : 200;
+          switch ( enemy_stone + my_rem ) {
+            case 5: values[i][j] += 40000; break;
+            case 4: values[i][j] += 15000; break;
             default : values[i][j] += 200;
           }
         }
-        // if ( values[i][j] != 0 ) { continue; }
         // 相手の三連を防ぐ → 500;
         if ( enemy_len == 3 ) {
           values[i][j] += 500;
@@ -228,14 +234,15 @@ public class User_s13t245_00 extends GogoCompSub {
 //  取の全周チェック(ダブルの判定は無し)
 //----------------------------------------------------------------
 
-  boolean check_rem(int [][] board, int color, int i, int j) {
+  int check_rem(int [][] board, int color, int i, int j) {
+    int count = 0;
     for ( int dx = -1; dx <= 1; dx++ ) {
       for ( int dy = -1; dy <= 1; dy++ ) {
         if ( dx == 0 && dy == 0 ) { continue; }
-        if ( check_rem_dir(board, color, i, j, dx, dy) ) { return true; }
+        if ( check_rem_dir(board, color, i, j, dx, dy) ) { count++; }
       }
     }
-    return false;
+    return count;
   }
 
 //----------------------------------------------------------------
@@ -247,7 +254,7 @@ public class User_s13t245_00 extends GogoCompSub {
     for ( int k = 1; k <= len; k++ ) {
       int x = i+k*dx;
       int y = j+k*dy;
-      if (k == len) { color *= -1; }
+      if ( k == len ) { color *= -1; }
       if ( x < 0 || y < 0 || x >= size || y >= size ) { return false; }
       if ( board[x][y] != color ) { return false; }
     }

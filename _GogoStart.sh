@@ -1,4 +1,4 @@
 #!/bin/sh
 
 echo "WinG-LAの実行"
-java GogoStart
+java GogoStart >> log/gameLog.txt

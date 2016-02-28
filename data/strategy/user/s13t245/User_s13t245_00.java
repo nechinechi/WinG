@@ -75,35 +75,33 @@ public class User_s13t245_00 extends GogoCompSub {
     my_stone = get_mystone(prev);
     enemy_stone = get_enemystone(prev);
 
-    // System.out.printf("my: %s\n", get_mystone(prev));
-    // System.out.printf("enemy: %s\n", get_enemystone(prev));
     //--  各マスの評価値
     for (int i = 0; i < size; i++) {
       for (int j = 0; j < size; j++) {
         // 埋まっているマスはスルー
         if (values[i][j] == -2) { continue; }
         // 三々の禁じ手は打たない → -1
-        // if ( check_prohibited(cell, mycolor, i, j) ) {
-        //   values[i][j] -= -1;
-        //   continue;
-        // }
+        if ( check_prohibited(cell, mycolor, i, j) ) {
+          values[i][j] = -1;
+          continue;
+        }
         //--  適当な評価の例
         // 相手の五連を崩す → 1000;
         // 勝利(五連) → 900;
         if ( check_run(cell, mycolor, i, j, 5) ) {
-          values[i][j] += 900;
+          values[i][j] += 20000;
         }
         // 敗北阻止(五連) → 800;
         if ( check_run(cell, mycolor*-1, i, j, 5) ) {
-          values[i][j] += 800;
+          values[i][j] += 20000;
         }
         // 相手の四連を止める → 700;
         if ( check_run(cell, mycolor*-1, i, j, 4) ) {
-          values[i][j] += 700;
+          values[i][j] += 29000;
         }
         // 自分の四連を作る → 600;
         if ( check_run(cell, mycolor, i, j, 4) ) {
-          values[i][j] += 600;
+          values[i][j] += 19000;
         }
         // 相手の石を取る → 300;
         if ( check_rem(cell, mycolor, i, j) ) {
@@ -111,7 +109,12 @@ public class User_s13t245_00 extends GogoCompSub {
         }
         // 自分の石を守る → 200;
         if ( check_rem(cell, mycolor*-1, i, j) ) {
-          values[i][j] += (enemy_stone >= 8) ? 20000 : 200;
+          // values[i][j] += (enemy_stone >= 8) ? 40000 : 200;
+          switch ( enemy_stone ) {
+            case 8: values[i][j] += 40000; break;
+            case 6: values[i][j] += 15000; break;
+            default : values[i][j] += 200;
+          }
         }
         // if ( values[i][j] != 0 ) { continue; }
         // 相手の三連を防ぐ → 500;

@@ -27,6 +27,7 @@ public class User_s13t245_00 extends GogoCompSub {
     theState = state;
     theBoard = state.board;
     lastHand = hand;
+    GameState testState = state;
 
     //--  置石チェック
     init_values(theState, theBoard);
@@ -38,6 +39,7 @@ public class User_s13t245_00 extends GogoCompSub {
     //--  着手の決定
     return deside_hand();
 
+    // return seeBeyond(theState);
   }
 
 //----------------------------------------------------------------
@@ -111,7 +113,7 @@ public class User_s13t245_00 extends GogoCompSub {
         if ( check_rem(cell, mycolor*-1, i, j) ) {
           values[i][j] += (enemy_stone >= 8) ? 20000 : 200;
         }
-        if ( values[i][j] != 0 ) { continue; }
+        // if ( values[i][j] != 0 ) { continue; }
         // 相手の三連を防ぐ → 500;
         if ( check_run(cell, mycolor*-1, i, j, 3) ) {
           values[i][j] += 500;
@@ -123,8 +125,6 @@ public class User_s13t245_00 extends GogoCompSub {
           int aaa = (int) Math.round(Math.random() * 15);
           if (values[i][j] < aaa) { values[i][j] += aaa; }
         }
-        // 四々や四三の判定
-        // 飛び三や飛び四の判定
         // 三をどちらで止めるか
       }
     }
@@ -159,19 +159,63 @@ public class User_s13t245_00 extends GogoCompSub {
   }
 
 //----------------------------------------------------------------
-//  取の方向チェック
+//  禁じ手チェック
 //----------------------------------------------------------------
 
   boolean check_prohibited(int[][] board, int color, int i, int j)
   {
+    int count = 0;
     for ( int dx = -1; dx <= 1; dx++ ) {
       for ( int dy = -1; dy <= 1; dy++ ) {
         if ( dx == 0 && dy == 0 ) { continue; }
         if ( check_run_dir(board, color, i, j, dx, dy, 3) ) {
+          count++;
+          if ( check_three_len(board, color, i+dx, j+dy) ) { return true; }
+          if ( check_three_len(board, color, i+2*dx, j+2*dy) ) { return true; }
         }
       }
     }
-    return false;
+    return ( count >= 2 );
+  }
+
+//----------------------------------------------------------------
+//  禁じ手チェック
+//----------------------------------------------------------------
+
+  boolean check_three_len(int[][] board, int color, int i, int j)
+  {
+    return check_three_len_dir(board, color, i, j, 1, 0)
+             || check_three_len_dir(board, color, i, j, 0, 1)
+             || check_three_len_dir(board, color, i, j, 1, 1)
+             || check_three_len_dir(board, color, i, j, 1, -1);
+  }
+
+//----------------------------------------------------------------
+//  禁じ手チェック
+//----------------------------------------------------------------
+
+  boolean check_three_len_dir(int[][] board, int color, int i, int j, int dx, int dy)
+  {
+    // if ( baord[i][j] != color ) { return false; }
+    int count = 1;
+    int p, q;
+    p = i-dx; q = j-dy;
+    if ( check_range(p, q) ) {
+      while ( board[p][q] == color ) {
+        count++;
+        p -= dx;  q -= dy;
+        if ( !check_range(p, q) ) { break; }
+      }
+    }
+    p = i+dx; q = j+dy;
+    if ( check_range(p, q) ) {
+      while ( board[p][q] == color ) {
+        count++;
+        p += dx;  q += dy;
+        if ( !check_range(p, q) ) { break; }
+      }
+    }
+    return ( count == 3 );
   }
 
 //----------------------------------------------------------------
@@ -204,6 +248,11 @@ public class User_s13t245_00 extends GogoCompSub {
     return true;
   }
 
+  boolean check_range(int i, int j)
+  {
+    return ( i >= 0 && j >= 0 && i < size && j < size );
+  }
+
 //----------------------------------------------------------------
 //  着手の決定
 //----------------------------------------------------------------
@@ -223,5 +272,27 @@ public class User_s13t245_00 extends GogoCompSub {
     }
     return hand;
   }
+
+//----------------------------------------------------------------
+//  着手の決定
+//----------------------------------------------------------------
+/*
+  public GameHand seeBeyond(GameState state) {
+    GameState testState = state;
+    theBoard = state.board;
+    for ( int i = 0; i < 3; i++ ) {
+      //--  置石チェック
+      init_values(testState, theBoard);
+
+      //--  評価値の計算
+      calc_values(testState, theBoard);
+      // 先手後手、取石数、手数(序盤・中盤・終盤)で評価関数を変える
+
+      //--  着手の決定
+      GameHand testHand = deside_hand();
+
+      // testState = test_hand(testHand);
+    }
+  }*/
 
 }

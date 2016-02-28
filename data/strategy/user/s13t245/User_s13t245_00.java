@@ -147,7 +147,7 @@ public class User_s13t245_00 extends GogoCompSub {
       int x = i+k*dx;
       int y = j+k*dy;
       if ( x < 0 || y < 0 || x >= size || y >= size ) { return false; }
-      if ( board[i+k*dx][j+k*dy] != color ) { return false; }
+      if ( board[x][y] != color ) { return false; }
     }
     return true;
   }
@@ -175,9 +175,9 @@ public class User_s13t245_00 extends GogoCompSub {
     for ( int k = 1; k <= len; k++ ) {
       int x = i+k*dx;
       int y = j+k*dy;
+      if (k == len) { color *= -1; }
       if ( x < 0 || y < 0 || x >= size || y >= size ) { return false; }
-      if ( board[i+k*dx][j+k*dy] != color ) { return false; }
-      if (k == len-1) { color *= -1; }
+      if ( board[x][y] != color ) { return false; }
     }
     return true;
   }

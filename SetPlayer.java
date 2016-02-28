@@ -20,6 +20,7 @@ public class SetPlayer
     player1.set_comp(new  data.strategy.sample.Dummy_30(player1));
     //player1.set_comp(new  data.strategy.sample.Dummy_40(player1));
     //player1.set_comp(new  data.strategy.sample.Dummy_50(player1));
+    //player1.set_comp(new  data.strategy.sample.Dummy_99(player1));
 
     //player1.set_comp(new data.strategy.user.s11t200.User_s11t200_00(player1));
 

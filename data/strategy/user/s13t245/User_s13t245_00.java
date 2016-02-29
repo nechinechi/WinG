@@ -93,8 +93,8 @@ public class User_s13t245_00 extends GogoCompSub {
         //--  適当な評価の例
         // 相手の五連を崩す → 1000;
         // if ( enemy_rem != 0 && check_round_5len(cell, mycolor*-1, i, j) ) {
-        if ( enemy_rem != 0 && enemy_round_len >= 5 ) {
-          values[i][j] = 1000000;
+        if ( enemy_rem != 0 && enemy_round_len == 5 ) {
+          values[i][j] = 100000000;
           return;
         }
         // 勝利(五取) → 1000;
@@ -113,7 +113,7 @@ public class User_s13t245_00 extends GogoCompSub {
           continue;
         }
         // 相手の四連を崩す
-        if ( enemy_rem != 0 && enemy_round_len >= 4 ) {
+        if ( enemy_rem != 0 && enemy_round_len == 4 ) {
           values[i][j] = 8500;
           return;
         }
@@ -167,13 +167,6 @@ public class User_s13t245_00 extends GogoCompSub {
 //----------------------------------------------------------------
 
   int check_run(int[][] board, int color, int i, int j) {
-    // for ( int dx = -1; dx <= 1; dx++ ) {
-    //   for ( int dy = -1; dy <= 1; dy++ ) {
-    //     if ( dx == 0 && dy == 0 ) { continue; }
-    //     if ( check_run_dir(board, color, i, j, dx, dy, len) ) { return true; }
-    //   }
-    // }
-    // return false;
     int[] count = new int[4];
     count[0] = check_run_dir(board, color, i, j, 0, 1);   // 横
     count[1] = check_run_dir(board, color, i, j, 1, 0);   // 縦
@@ -188,13 +181,6 @@ public class User_s13t245_00 extends GogoCompSub {
 //----------------------------------------------------------------
 
   int check_run_dir(int[][] board, int color, int i, int j, int dx, int dy) {
-    // for ( int k = 1; k < len; k++ ) {
-    //   int x = i+k*dx;
-    //   int y = j+k*dy;
-    //   if ( x < 0 || y < 0 || x >= size || y >= size ) { return false; }
-    //   if ( board[x][y] != color ) { return false; }
-    // }
-    // return true;
     int count = 1;
     int p, q;
     p = i-dx; q = j-dy;
@@ -248,7 +234,43 @@ public class User_s13t245_00 extends GogoCompSub {
   }
 
 //----------------------------------------------------------------
-//  取の全周チェック(ダブルの判定は無し)
+//  周囲の五連のチェック
+//----------------------------------------------------------------
+
+  int check_round_len(int[][] board, int color, int i, int j) {
+    int max = -1;
+    for ( int dx = -1; dx <= 1; dx++ ) {
+      for ( int dy = -1; dy <= 1; dy++ ) {
+        if ( dx == 0 && dy == 0 ) { continue; }
+        if ( !check_rem_dir(board, color, i, j, dx, dy) ) { continue; }
+        int len =  check_round_len_dir(board, color, i, j, dx, dy);
+        if ( len == 5 ) { return len; }
+          else if ( max < len ) { max = len; }
+      }
+    }
+    return max;
+  }
+
+//----------------------------------------------------------------
+//  五連のチェック
+//----------------------------------------------------------------
+
+  int check_round_len_dir(int[][] board, int color, int i, int j, int dx, int dy) {
+    int p = i+dx;
+    int q = j+dy;
+    int[] count = new int[8];
+    for ( int k = 0; k < 2; k++ ) {
+      count[4*k] = check_run_dir(board, color, i, j, 0, 1);     // 横
+      count[4*k+1] = check_run_dir(board, color, i, j, 1, 0);   // 縦
+      count[4*k+2] = check_run_dir(board, color, i, j, 1, 1);   // 傾き 1
+      count[4*k+3] = check_run_dir(board, color, i, j, 1, -1);  // 傾き-1
+      p += dx;  q += dy;
+    }
+    return max_actor(count);
+  }
+
+//----------------------------------------------------------------
+//  取の全周チェック
 //----------------------------------------------------------------
 
   int check_rem(int [][] board, int color, int i, int j) {
@@ -278,49 +300,8 @@ public class User_s13t245_00 extends GogoCompSub {
     return true;
   }
 
-  boolean check_range(int i, int j)
-  {
+  boolean check_range(int i, int j) {
     return ( i >= 0 && j >= 0 && i < size && j < size );
-  }
-
-//----------------------------------------------------------------
-//  周囲の五連のチェック
-//----------------------------------------------------------------
-
-  int check_round_len(int[][] board, int color, int i, int j) {
-    int max = -1;
-    for ( int dx = -1; dx <= 1; dx++ ) {
-      for ( int dy = -1; dy <= 1; dy++ ) {
-        if ( dx == 0 && dy == 0 ) { continue; }
-        int len =  check_round_len_dir(board, color, i, j, dx, dy);
-        if ( len == 5 ) { return len; }
-          else if ( max < len ) { max = len; }
-      }
-    }
-    return max;
-  }
-
-//----------------------------------------------------------------
-//  五連のチェック
-//----------------------------------------------------------------
-
-  int check_round_len_dir(int[][] board, int color, int i, int j, int dx, int dy) {
-    int p = i+dx;
-    int q = j+dy;
-    int[] count = new int[8];
-    for ( int k = 0; k < 2; k++ ) {
-      // if ( check_run_dir(board, color, p, q, 1, 0) == 5           // 横
-      //          || check_run_dir(board, color, p, q, 0, 1) == 5    // 縦
-      //          || check_run_dir(board, color, p, q, 1, 1) == 5    // 傾き 1
-      //          || check_run_dir(board, color, p, q, 1, -1) == 5   // 傾き-1
-      //    ) { return true; }
-      count[4*k] = check_run_dir(board, color, i, j, 0, 1);   // 横
-      count[4*k+1] = check_run_dir(board, color, i, j, 1, 0);   // 縦
-      count[4*k+2] = check_run_dir(board, color, i, j, 1, 1);   // 傾き 1
-      count[4*k+3] = check_run_dir(board, color, i, j, 1, -1);  // 傾き-1
-      p += dx;  q += dy;
-    }
-    return max_actor(count);
   }
 
 //----------------------------------------------------------------
@@ -343,8 +324,10 @@ public class User_s13t245_00 extends GogoCompSub {
     hand.set_hand(0, 0);  // 左上をデフォルトのマスとする
     int value = -1;       // 評価値のデフォルト
     //--  評価値が最大となるマス
-    for (int i = 0; i < size; i++) {
-      for (int j = 0; j < size; j++) {
+    // for (int i = 0; i < size; i++) {
+    //   for (int j = 0; j < size; j++) {
+    for (int i = size-1; i >= 0; i--) {
+      for (int j = size-1; j >= 0; j--) {
         if (value < values[i][j]) {
           hand.set_hand(i, j);
           value = values[i][j];

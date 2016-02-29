@@ -68,9 +68,9 @@ public class User_s13t245_00 extends GogoCompSub {
 
   public void calc_values(GameState prev, GameBoard board) {
     int [][] cell = board.get_cell_all();  // 盤面情報
-    int mycolor;                  // 自分の石の色
-    int my_stone;
-    int enemy_stone;
+    int mycolor;        // 自分の石の色
+    int my_stone;       // 取った石の数
+    int enemy_stone;    // 取られた石の数
     mycolor = role;
     my_stone = get_mystone(prev) / 2;
     enemy_stone = get_enemystone(prev) / 2;
@@ -85,11 +85,11 @@ public class User_s13t245_00 extends GogoCompSub {
           values[i][j] = -1;
           continue;
         }
-        int my_len = check_run(cell, mycolor, i, j);
-        int enemy_len = check_run(cell, mycolor*-1, i, j);
-        int my_rem = check_rem(cell, mycolor, i, j);
-        int enemy_rem = check_rem(cell, mycolor*-1, i, j);
-        int enemy_round_len = check_round_len(cell, mycolor*-1, i, j);
+        int my_len = check_run(cell, mycolor, i, j);            // 自分の連の長さを取得
+        int enemy_len = check_run(cell, mycolor*-1, i, j);      // 相手の連の長さを取得
+        int my_rem = check_rem(cell, mycolor, i, j);            // 取石できる相手の石の数を取得
+        int enemy_rem = check_rem(cell, mycolor*-1, i, j);      // 取石できる範囲の相手の連の長さを取得
+        int enemy_round_len = check_round_len(cell, mycolor*-1, i, j);     // 取石できる範囲の相手の連の長さを取得
         //--  適当な評価の例
         // 相手の五連を崩す → 1000;
         // if ( enemy_rem != 0 && check_round_5len(cell, mycolor*-1, i, j) ) {
@@ -98,12 +98,12 @@ public class User_s13t245_00 extends GogoCompSub {
           return;
         }
         // 勝利(五取) → 1000;
-        if ( my_stone + enemy_rem >= 5 ) {
+        if ( my_stone + enemy_rem >= 5 ) {    // 自分の取った石の数 + 取ることのできる相手の石の数
           values[i][j] += 10000;
           continue;
         }
         // 敗北阻止(五取) → 950;
-        if ( enemy_stone + my_rem >= 5 ) {
+        if ( enemy_stone + my_rem >= 5 ) {    // 相手の取った石の数 + 相手にとられる可能性のある石の数
           values[i][j] += 9500;
           continue;
         }
@@ -177,7 +177,7 @@ public class User_s13t245_00 extends GogoCompSub {
   }
 
 //----------------------------------------------------------------
-//  連の方向チェック(止連・端連・長連も含む、飛びは無視)
+//  連の方向チェック(止連・端連・長連も含む)
 //----------------------------------------------------------------
 
   int check_run_dir(int[][] board, int color, int i, int j, int dx, int dy) {
@@ -227,10 +227,10 @@ public class User_s13t245_00 extends GogoCompSub {
 
   boolean check_three_len(int[][] board, int color, int i, int j)
   {
-    return check_run_dir(board, color, i, j, 1, 0) == 3         // 横
-             || check_run_dir(board, color, i, j, 0, 1) == 3    // 縦
-             || check_run_dir(board, color, i, j, 1, 1) == 3    // 傾き 1
-             || check_run_dir(board, color, i, j, 1, -1) == 3;  // 傾き-1
+    return ( check_run_dir(board, color, i, j, 1, 0) == 3           // 横
+               || check_run_dir(board, color, i, j, 0, 1) == 3      // 縦
+               || check_run_dir(board, color, i, j, 1, 1) == 3      // 傾き 1
+               || check_run_dir(board, color, i, j, 1, -1) == 3 );  // 傾き-1
   }
 
 //----------------------------------------------------------------

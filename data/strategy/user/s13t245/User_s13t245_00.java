@@ -78,10 +78,6 @@ public class User_s13t245_00 extends GogoCompSub {
     //--  各マスの評価値
     for (int i = 0; i < size; i++) {
       for (int j = 0; j < size; j++) {
-        int my_len = check_run(cell, mycolor, i, j);
-        int enemy_len = check_run(cell, mycolor*-1, i, j);
-        int my_rem = check_rem(cell, mycolor, i, j);
-        int enemy_rem = check_rem(cell, mycolor*-1, i, j);
         // 埋まっているマスはスルー
         if (values[i][j] == -2) { continue; }
         // 三々の禁じ手は打たない → -1
@@ -89,65 +85,77 @@ public class User_s13t245_00 extends GogoCompSub {
           values[i][j] = -1;
           continue;
         }
+        int my_len = check_run(cell, mycolor, i, j);
+        int enemy_len = check_run(cell, mycolor*-1, i, j);
+        int my_rem = check_rem(cell, mycolor, i, j);
+        int enemy_rem = check_rem(cell, mycolor*-1, i, j);
+        int enemy_round_len = check_round_len(cell, mycolor*-1, i, j);
         //--  適当な評価の例
         // 相手の五連を崩す → 1000;
-        if ( enemy_rem != 0 && check_round_5len(cell, mycolor*-1, i, j) ) {
+        // if ( enemy_rem != 0 && check_round_5len(cell, mycolor*-1, i, j) ) {
+        if ( enemy_rem != 0 && enemy_round_len >= 5 ) {
           values[i][j] = 1000000;
           return;
         }
         // 勝利(五取) → 1000;
         if ( my_stone + enemy_rem >= 5 ) {
-          values[i][j] += 1000;
+          values[i][j] += 10000;
           continue;
         }
         // 敗北阻止(五取) → 950;
         if ( enemy_stone + my_rem >= 5 ) {
-          values[i][j] += 950;
+          values[i][j] += 9500;
           continue;
         }
         // 勝利(五連) → 900;
         if ( my_len == 5 ) {
-          values[i][j] += 900;
+          values[i][j] += 9000;
           continue;
+        }
+        // 相手の四連を崩す
+        if ( enemy_rem != 0 && enemy_round_len >= 4 ) {
+          values[i][j] = 8500;
+          return;
         }
         // 敗北阻止(五連) → 800;
         if ( enemy_len == 5 ) {
-          values[i][j] += 800;
+          values[i][j] += 8000;
           continue;
         }
         // 相手の四連を止める → 700;
         if ( enemy_len == 4 ) {
-          values[i][j] += 700;
+          values[i][j] += 7000;
           continue;
         }
         // 自分の四連を作る → 600;
         if ( my_len == 4 ) {
-          values[i][j] += 600;
+          values[i][j] += 6000;
           continue;
         }
         // 相手の石を取る → 300;
         if ( enemy_rem != 0 ) {
           switch ( my_stone + enemy_rem ) {
-            case 4  : values[i][j] += 150; break;
+            case 4  : values[i][j] += 500; break;
             default : values[i][j] += 300;
           }
         }
         // 自分の石を守る → 200;
         if ( my_rem != 0 ) {
           switch ( enemy_stone + my_rem ) {
-            case 4  : values[i][j] += 150; break;
+            case 4  : values[i][j] += 500; break;
             default : values[i][j] += 200;
           }
         }
         // 相手の三連を防ぐ → 500;
         if ( enemy_len == 3 ) { values[i][j] += 500; }
-        else if ( enemy_len == 2 ) { values[i][j] += 200; }
+          else if ( enemy_len == 2 ) { values[i][j] += 200; }
         // 自分の三連を作る → 400;
         if ( my_len == 3 ) { values[i][j] += 400; }
+          else if ( my_len == 2 ) { values[i][j] += 300; }
         // ランダム
         if (values[i][j] == 0) {
           int aaa = (int) Math.round(Math.random() * 15);
-          if (values[i][j] < aaa) { values[i][j] += aaa; }
+          if (values[i][j] < aaa) { values[i][j] = aaa; }
         }
         // 三をどちらで止めるか
       }
@@ -279,33 +287,45 @@ public class User_s13t245_00 extends GogoCompSub {
 //  周囲の五連のチェック
 //----------------------------------------------------------------
 
-  boolean check_round_5len(int[][] board, int color, int i, int j) {
+  int check_round_len(int[][] board, int color, int i, int j) {
+    int max = -1;
     for ( int dx = -1; dx <= 1; dx++ ) {
       for ( int dy = -1; dy <= 1; dy++ ) {
         if ( dx == 0 && dy == 0 ) { continue; }
-        if ( check_round_5len_dir(board, color, i, j, dx, dy) ) { return true; }
+        int len =  check_round_len_dir(board, color, i, j, dx, dy);
+        if ( len == 5 ) { return len; }
+          else if ( max < len ) { max = len; }
       }
     }
-    return false;
+    return max;
   }
 
 //----------------------------------------------------------------
 //  五連のチェック
 //----------------------------------------------------------------
 
-  boolean check_round_5len_dir(int[][] board, int color, int i, int j, int dx, int dy) {
+  int check_round_len_dir(int[][] board, int color, int i, int j, int dx, int dy) {
     int p = i+dx;
     int q = j+dy;
+    int[] count = new int[8];
     for ( int k = 0; k < 2; k++ ) {
-      if ( check_run_dir(board, color, p, q, 1, 0) == 5           // 横
-               || check_run_dir(board, color, p, q, 0, 1) == 5    // 縦
-               || check_run_dir(board, color, p, q, 1, 1) == 5    // 傾き 1
-               || check_run_dir(board, color, p, q, 1, -1) == 5   // 傾き-1
-         ) { return true; }
+      // if ( check_run_dir(board, color, p, q, 1, 0) == 5           // 横
+      //          || check_run_dir(board, color, p, q, 0, 1) == 5    // 縦
+      //          || check_run_dir(board, color, p, q, 1, 1) == 5    // 傾き 1
+      //          || check_run_dir(board, color, p, q, 1, -1) == 5   // 傾き-1
+      //    ) { return true; }
+      count[4*k] = check_run_dir(board, color, i, j, 0, 1);   // 横
+      count[4*k+1] = check_run_dir(board, color, i, j, 1, 0);   // 縦
+      count[4*k+2] = check_run_dir(board, color, i, j, 1, 1);   // 傾き 1
+      count[4*k+3] = check_run_dir(board, color, i, j, 1, -1);  // 傾き-1
       p += dx;  q += dy;
     }
-    return false;
+    return max_actor(count);
   }
+
+//----------------------------------------------------------------
+//  配列要素の最大値を返却
+//----------------------------------------------------------------
 
   int max_actor(int[] array) {
     int actor = -1;

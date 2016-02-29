@@ -91,44 +91,57 @@ public class User_s13t245_00 extends GogoCompSub {
         }
         //--  適当な評価の例
         // 相手の五連を崩す → 1000;
+        if ( enemy_rem != 0 && check_round_5len(cell, mycolor*-1, i, j) ) {
+          values[i][j] = 1000000;
+          return;
+        }
+        // 勝利(五取) → 1000;
+        if ( my_stone + enemy_rem >= 5 ) {
+          values[i][j] += 1000;
+          continue;
+        }
+        // 敗北阻止(五取) → 950;
+        if ( enemy_stone + my_rem >= 5 ) {
+          values[i][j] += 950;
+          continue;
+        }
         // 勝利(五連) → 900;
         if ( my_len == 5 ) {
-          values[i][j] += 20000;
+          values[i][j] += 900;
+          continue;
         }
         // 敗北阻止(五連) → 800;
         if ( enemy_len == 5 ) {
-          values[i][j] += 20000;
+          values[i][j] += 800;
+          continue;
         }
         // 相手の四連を止める → 700;
         if ( enemy_len == 4 ) {
-          values[i][j] += 29000;
+          values[i][j] += 700;
+          continue;
         }
         // 自分の四連を作る → 600;
         if ( my_len == 4 ) {
-          values[i][j] += 19000;
+          values[i][j] += 600;
+          continue;
         }
         // 相手の石を取る → 300;
         if ( enemy_rem != 0 ) {
-          // values[i][j] += ( my_stone >= 4 ) ? 20000 : 300;
           switch ( my_stone + enemy_rem ) {
-            case 5: values[i][j] += 20000; break;
-            case 4: values[i][j] += 15000; break;
+            case 4  : values[i][j] += 150; break;
             default : values[i][j] += 300;
           }
         }
         // 自分の石を守る → 200;
         if ( my_rem != 0 ) {
-          // values[i][j] += (enemy_stone >= 4) ? 40000 : 200;
           switch ( enemy_stone + my_rem ) {
-            case 5: values[i][j] += 40000; break;
-            case 4: values[i][j] += 15000; break;
+            case 4  : values[i][j] += 150; break;
             default : values[i][j] += 200;
           }
         }
         // 相手の三連を防ぐ → 500;
-        if ( enemy_len == 3 ) {
-          values[i][j] += 500;
-        }
+        if ( enemy_len == 3 ) { values[i][j] += 500; }
+        else if ( enemy_len == 2 ) { values[i][j] += 200; }
         // 自分の三連を作る → 400;
         if ( my_len == 3 ) { values[i][j] += 400; }
         // ランダム
@@ -158,12 +171,8 @@ public class User_s13t245_00 extends GogoCompSub {
     count[1] = check_run_dir(board, color, i, j, 1, 0);   // 縦
     count[2] = check_run_dir(board, color, i, j, 1, 1);   // 傾き 1
     count[3] = check_run_dir(board, color, i, j, 1, -1);  // 傾き-1
-    int max_index = 0;
-    for ( int k = 1; k < count.length; k++ ) {
-      if ( count[max_index] < count[k] ) { max_index = k; }
-    }
 
-    return count[max_index];
+    return max_actor(count);
   }
 
 //----------------------------------------------------------------
@@ -266,6 +275,45 @@ public class User_s13t245_00 extends GogoCompSub {
     return ( i >= 0 && j >= 0 && i < size && j < size );
   }
 
+//----------------------------------------------------------------
+//  周囲の五連のチェック
+//----------------------------------------------------------------
+
+  boolean check_round_5len(int[][] board, int color, int i, int j) {
+    for ( int dx = -1; dx <= 1; dx++ ) {
+      for ( int dy = -1; dy <= 1; dy++ ) {
+        if ( dx == 0 && dy == 0 ) { continue; }
+        if ( check_round_5len_dir(board, color, i, j, dx, dy) ) { return true; }
+      }
+    }
+    return false;
+  }
+
+//----------------------------------------------------------------
+//  五連のチェック
+//----------------------------------------------------------------
+
+  boolean check_round_5len_dir(int[][] board, int color, int i, int j, int dx, int dy) {
+    int p = i+dx;
+    int q = j+dy;
+    for ( int k = 0; k < 2; k++ ) {
+      if ( check_run_dir(board, color, p, q, 1, 0) == 5           // 横
+               || check_run_dir(board, color, p, q, 0, 1) == 5    // 縦
+               || check_run_dir(board, color, p, q, 1, 1) == 5    // 傾き 1
+               || check_run_dir(board, color, p, q, 1, -1) == 5   // 傾き-1
+         ) { return true; }
+      p += dx;  q += dy;
+    }
+    return false;
+  }
+
+  int max_actor(int[] array) {
+    int actor = -1;
+    for ( int k = 0; k < array.length; k++ ) {
+      if ( actor < array[k] ) { actor = array[k]; }
+    }
+    return actor;
+  }
 //----------------------------------------------------------------
 //  着手の決定
 //----------------------------------------------------------------

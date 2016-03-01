@@ -90,6 +90,8 @@ public class User_s13t245_00 extends GogoCompSub {
         int my_rem = check_rem(cell, mycolor, i, j);            // 取石できる相手の石の数を取得
         int enemy_rem = check_rem(cell, mycolor*-1, i, j);      // 取石できる範囲の相手の連の長さを取得
         int enemy_round_len = check_round_len(cell, mycolor*-1, i, j);     // 取石できる範囲の相手の連の長さを取得
+        int my_possible_stone = my_stone + enemy_rem;
+        int enemy_possible_stone = enemy_stone + my_rem;
         //--  適当な評価の例
         // 相手の五連を崩す → 1000;
         // if ( enemy_rem != 0 && check_round_5len(cell, mycolor*-1, i, j) ) {
@@ -98,60 +100,66 @@ public class User_s13t245_00 extends GogoCompSub {
           return;
         }
         // 勝利(五取) → 1000;
-        if ( my_stone + enemy_rem >= 5 ) {    // 自分の取った石の数 + 取ることのできる相手の石の数
-          values[i][j] += 10000;
+        if ( my_possible_stone >= 5 ) {    // 自分の取った石の数 + 取ることのできる相手の石の数
+          values[i][j] += 12000;
           continue;
         }
         // 敗北阻止(五取) → 950;
-        if ( enemy_stone + my_rem >= 5 ) {    // 相手の取った石の数 + 相手にとられる可能性のある石の数
-          values[i][j] += 9500;
+        if ( enemy_possible_stone >= 5 ) {    // 相手の取った石の数 + 相手にとられる可能性のある石の数
+          values[i][j] += 11000;
           continue;
         }
         // 勝利(五連) → 900;
         if ( my_len == 5 ) {
-          values[i][j] += 9000;
+          values[i][j] += 10500;
           continue;
         }
         // 相手の四連を崩す
         if ( enemy_rem != 0 && enemy_round_len == 4 ) {
-          values[i][j] = 8500;
+          values[i][j] = 10000;
           return;
         }
         // 敗北阻止(五連) → 800;
         if ( enemy_len == 5 ) {
-          values[i][j] += 8000;
+          values[i][j] += 9500;
           continue;
         }
         // 相手の四連を止める → 700;
         if ( enemy_len == 4 ) {
-          values[i][j] += 7000;
+          values[i][j] += 9000;
           continue;
         }
         // 自分の四連を作る → 600;
         if ( my_len == 4 ) {
-          values[i][j] += 6000;
+          values[i][j] += 8500;
           continue;
         }
         // 相手の石を取る → 300;
         if ( enemy_rem != 0 ) {
-          switch ( my_stone + enemy_rem ) {
-            case 4  : values[i][j] += 500; break;
-            default : values[i][j] += 300;
+          switch ( my_possible_stone ) {
+            case 4  : values[i][j] += 8000; break;
+            case 3  : values[i][j] += 3900; break;
+            case 2  : values[i][j] += 1900; break;
+            case 1  : values[i][j] += 900; break;
+            default : values[i][j] += 0;
           }
         }
         // 自分の石を守る → 200;
         if ( my_rem != 0 ) {
-          switch ( enemy_stone + my_rem ) {
-            case 4  : values[i][j] += 500; break;
-            default : values[i][j] += 200;
+          switch ( enemy_possible_stone ) {
+            case 4  : values[i][j] += 7800; break;
+            case 3  : values[i][j] += 3800; break;
+            case 2  : values[i][j] += 1800; break;
+            case 1  : values[i][j] += 800; break;
+            default : values[i][j] += 0;
           }
         }
         // 相手の三連を防ぐ → 500;
-        if ( enemy_len == 3 ) { values[i][j] += 500; }
+        if ( enemy_len == 3 ) { values[i][j] += 400; }
           else if ( enemy_len == 2 ) { values[i][j] += 200; }
         // 自分の三連を作る → 400;
-        if ( my_len == 3 ) { values[i][j] += 400; }
-          else if ( my_len == 2 ) { values[i][j] += 300; }
+        if ( my_len == 3 ) { values[i][j] += 300; }
+          else if ( my_len == 2 ) { values[i][j] += 100; }
         // ランダム
         if (values[i][j] == 0) {
           int aaa = (int) Math.round(Math.random() * 15);
@@ -244,6 +252,7 @@ public class User_s13t245_00 extends GogoCompSub {
         if ( dx == 0 && dy == 0 ) { continue; }
         if ( !check_rem_dir(board, color, i, j, dx, dy) ) { continue; }
         int len =  check_round_len_dir(board, color, i, j, dx, dy);
+        if ( len > 5 ) { continue; }
         if ( len == 5 ) { return len; }
           else if ( max < len ) { max = len; }
       }

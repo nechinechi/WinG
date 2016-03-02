@@ -29,6 +29,9 @@ public class User_s13t245_00 extends GogoCompSub {
     lastHand = hand;
     // GameState testState = state;
 
+    //
+    // boardprint(theBoard);
+
     //--  置石チェック
     init_values(theState, theBoard);
 
@@ -42,6 +45,15 @@ public class User_s13t245_00 extends GogoCompSub {
     // return seeBeyond(theState);
   }
 
+  void boardprint (GameBoard board) {
+    for (int i = 0; i < size; i++) {
+      for (int j = 0; j < size; j++) {
+        System.out.printf("%2d", board.get_cell(j,i));   // i, j を逆に
+      }
+      System.out.println();
+    }
+    System.out.println();
+  }
 //----------------------------------------------------------------
 //  置石チェック
 //----------------------------------------------------------------
@@ -54,9 +66,13 @@ public class User_s13t245_00 extends GogoCompSub {
         if (board.get_cell(i, j) != board.SPACE) {
           values[i][j] = -2;
         } else {
-          if (values[i][j] == -2) {
-            values[i][j] = 0;
-          }
+          // if (values[i][j] == -2) {
+          //   values[i][j] = 0;
+          // }
+          values[i][j] = 0;
+          int t1 = Math.abs(i-7);
+          int t2 = Math.abs(j-7);
+          values[i][j] = (14 - t1 - t2) * 10;
         }
       }
     }
@@ -101,37 +117,37 @@ public class User_s13t245_00 extends GogoCompSub {
         }
         // 勝利(五取) → 1000;
         if ( my_possible_stone >= 5 ) {    // 自分の取った石の数 + 取ることのできる相手の石の数
-          values[i][j] += 12000;
+          values[i][j] += 19000;
           continue;
         }
         // 敗北阻止(五取) → 950;
         if ( enemy_possible_stone >= 5 ) {    // 相手の取った石の数 + 相手にとられる可能性のある石の数
-          values[i][j] += 11000;
+          values[i][j] += 18500;
           continue;
         }
         // 勝利(五連) → 900;
         if ( my_len == 5 ) {
-          values[i][j] += 10500;
+          values[i][j] += 18000;
           continue;
         }
         // 相手の四連を崩す
         if ( enemy_rem != 0 && enemy_round_len == 4 ) {
-          values[i][j] = 10000;
-          return;
+          values[i][j] = 17500;
+          continue;
         }
         // 敗北阻止(五連) → 800;
         if ( enemy_len == 5 ) {
-          values[i][j] += 9500;
+          values[i][j] += 17000;
           continue;
         }
         // 相手の四連を止める → 700;
         if ( enemy_len == 4 ) {
-          values[i][j] += 9000;
+          values[i][j] += 16500;
           continue;
         }
         // 自分の四連を作る → 600;
         if ( my_len == 4 ) {
-          values[i][j] += 8500;
+          values[i][j] += 16000;
           continue;
         }
         // 相手の石を取る → 300;
@@ -154,6 +170,7 @@ public class User_s13t245_00 extends GogoCompSub {
             default : values[i][j] += 0;
           }
         }
+        if ( values[i][j] != 0 ) { continue; }
         // 相手の三連を防ぐ → 500;
         if ( enemy_len == 3 ) { values[i][j] += 400; }
           else if ( enemy_len == 2 ) { values[i][j] += 200; }
@@ -161,7 +178,7 @@ public class User_s13t245_00 extends GogoCompSub {
         if ( my_len == 3 ) { values[i][j] += 300; }
           else if ( my_len == 2 ) { values[i][j] += 100; }
         // ランダム
-        if (values[i][j] == 0) {
+        if ( values[i][j] == 0 ) {
           int aaa = (int) Math.round(Math.random() * 15);
           if (values[i][j] < aaa) { values[i][j] = aaa; }
         }
@@ -191,6 +208,7 @@ public class User_s13t245_00 extends GogoCompSub {
   int check_run_dir(int[][] board, int color, int i, int j, int dx, int dy) {
     int count = 1;
     int p, q;
+    // if ( board[i][j] != color ) { return 0; }
     p = i-dx; q = j-dy;
     if ( check_range(p, q) ) {
       while ( board[p][q] == color ) {

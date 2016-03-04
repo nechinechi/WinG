@@ -69,7 +69,7 @@ public class User_s13t245_00 extends GogoCompSub {
           // if (values[i][j] == -2) {
           //   values[i][j] = 0;
           // }
-          values[i][j] = 0;
+          // values[i][j] = 0;
           int t1 = Math.abs(i-7);
           int t2 = Math.abs(j-7);
           values[i][j] = (14 - t1 - t2) * 10;
@@ -101,8 +101,8 @@ public class User_s13t245_00 extends GogoCompSub {
           values[i][j] = -1;
           continue;
         }
-        int my_len = check_run(cell, mycolor, i, j);            // 自分の連の長さを取得
-        int enemy_len = check_run(cell, mycolor*-1, i, j);      // 相手の連の長さを取得
+        int[] my_len = check_run(cell, mycolor, i, j);            // 自分の連の長さを取得
+        int[] enemy_len = check_run(cell, mycolor*-1, i, j);      // 相手の連の長さを取得
         int my_rem = check_rem(cell, mycolor, i, j);            // 取石できる相手の石の数を取得
         int enemy_rem = check_rem(cell, mycolor*-1, i, j);      // 取石できる範囲の相手の連の長さを取得
         int enemy_round_len = check_round_len(cell, mycolor*-1, i, j);     // 取石できる範囲の相手の連の長さを取得
@@ -126,7 +126,7 @@ public class User_s13t245_00 extends GogoCompSub {
           continue;
         }
         // 勝利(五連) → 900;
-        if ( my_len == 5 ) {
+        if ( my_len[5] > 0 ) {
           values[i][j] += 18000;
           continue;
         }
@@ -136,17 +136,17 @@ public class User_s13t245_00 extends GogoCompSub {
           continue;
         }
         // 敗北阻止(五連) → 800;
-        if ( enemy_len == 5 ) {
+        if ( enemy_len[5] > 0 ) {
           values[i][j] += 17000;
           continue;
         }
         // 相手の四連を止める → 700;
-        if ( enemy_len == 4 ) {
+        if ( enemy_len[4] > 0 ) {
           values[i][j] += 16500;
           continue;
         }
         // 自分の四連を作る → 600;
-        if ( my_len == 4 ) {
+        if ( my_len[4] > 0 ) {
           values[i][j] += 16000;
           continue;
         }
@@ -172,16 +172,11 @@ public class User_s13t245_00 extends GogoCompSub {
         }
         if ( values[i][j] != 0 ) { continue; }
         // 相手の三連を防ぐ → 500;
-        if ( enemy_len == 3 ) { values[i][j] += 400; }
-          else if ( enemy_len == 2 ) { values[i][j] += 200; }
+        if ( enemy_len[3] > 0 ) { values[i][j] += 400; }
+          else if ( enemy_len[2] > 0 ) { values[i][j] += 200; }
         // 自分の三連を作る → 400;
-        if ( my_len == 3 ) { values[i][j] += 300; }
-          else if ( my_len == 2 ) { values[i][j] += 100; }
-        // ランダム
-        if ( values[i][j] == 0 ) {
-          int aaa = (int) Math.round(Math.random() * 15);
-          if (values[i][j] < aaa) { values[i][j] = aaa; }
-        }
+        if ( my_len[3] > 0 ) { values[i][j] += 300; }
+          else if ( my_len[2] > 0 ) { values[i][j] += 100; }
         // 三をどちらで止めるか
       }
     }
@@ -191,14 +186,21 @@ public class User_s13t245_00 extends GogoCompSub {
 //  連の全周チェック
 //----------------------------------------------------------------
 
-  int check_run(int[][] board, int color, int i, int j) {
+  int[] check_run(int[][] board, int color, int i, int j) {
     int[] count = new int[4];
+    int[] len = new int[6];
+    for ( int k = 0; k < len.length; k++ ) { len[k] = 0; }
     count[0] = check_run_dir(board, color, i, j, 0, 1);   // 横
     count[1] = check_run_dir(board, color, i, j, 1, 0);   // 縦
     count[2] = check_run_dir(board, color, i, j, 1, 1);   // 傾き 1
     count[3] = check_run_dir(board, color, i, j, 1, -1);  // 傾き-1
 
-    return max_actor(count);
+    for ( int k = 0; k < count.length; k++ ) {
+      len[count[k]]++;
+    }
+
+    // return max_actor(count);
+    return len;
   }
 
 //----------------------------------------------------------------
@@ -209,15 +211,20 @@ public class User_s13t245_00 extends GogoCompSub {
     int count = 1;
     int p, q;
     // if ( board[i][j] != color ) { return 0; }
-    p = i-dx; q = j-dy;
-    if ( check_range(p, q) ) {
-      while ( board[p][q] == color ) {
-        count++;
-        p -= dx;  q -= dy;
-        if ( !check_range(p, q) ) { break; }
-      }
-    }
-    p = i+dx; q = j+dy;
+    count += count_one_dir_len(board, color, i, j, dx, dy);    // 指定された方向
+    count += count_one_dir_len(board, color, i, j, -dx, -dy);  // 逆方向
+
+    return ( count <= 5 ) ? count : 0;
+  }
+
+//----------------------------------------------------------------
+//  一方向の連の長さをカウント
+//----------------------------------------------------------------
+
+  int count_one_dir_len(int[][] board, int color, int i, int j, int dx, int dy) {
+    int count = 0;
+    int p = i+dx;
+    int q = j+dy;
     if ( check_range(p, q) ) {
       while ( board[p][q] == color ) {
         count++;
@@ -286,13 +293,23 @@ public class User_s13t245_00 extends GogoCompSub {
     int p = i+dx;
     int q = j+dy;
     int[] count = new int[8];
+    int[] len_num = new int[5];
+
+    for ( int k = 0; k < len_num.length; k++ ) { len_num[k] = 0; }
     for ( int k = 0; k < 2; k++ ) {
       count[4*k] = check_run_dir(board, color, i, j, 0, 1);     // 横
       count[4*k+1] = check_run_dir(board, color, i, j, 1, 0);   // 縦
       count[4*k+2] = check_run_dir(board, color, i, j, 1, 1);   // 傾き 1
       count[4*k+3] = check_run_dir(board, color, i, j, 1, -1);  // 傾き-1
+      // for ( int l = 0; l < len_num.length; l++ ) {
+      //   len_num[count[4*k+l]]++;
+      // }
       p += dx;  q += dy;
     }
+    for ( int k = 0; k < count.length; k++ ) {
+      len_num[count[k]]++;
+    }
+
     return max_actor(count);
   }
 
